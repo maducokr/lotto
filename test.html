@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>배포 테스트 페이지</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>로또 번호 추첨기 배포 테스트</h1>
+  
+  <div class="test-section">
+    <h2>서버 상태 확인</h2>
+    <button onclick="checkHealth()">헬스 체크</button>
+    <div id="health-status"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>정적 파일 확인</h2>
+    <button onclick="checkImages()">이미지 파일 확인</button>
+    <div id="image-status"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>JavaScript 기능 테스트</h2>
+    <button onclick="testJavaScript()">JavaScript 테스트</button>
+    <div id="js-status"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>메인 페이지로 이동</h2>
+    <a href="/" style="text-decoration: none;">
+      <button>메인 페이지 열기</button>
+    </a>
+  </div>
+
+  <script>
+    async function checkHealth() {
+      const statusDiv = document.getElementById('health-status');
+      try {
+        const response = await fetch('/health');
+        const data = await response.json();
+        statusDiv.innerHTML = `
+          <div class="status success">
+            ✅ 서버 정상 작동<br>
+            상태: ${data.status}<br>
+            메시지: ${data.message}<br>
+            시간: ${data.timestamp}<br>
+            포트: ${data.port}
+          </div>
+        `;
+      } catch (error) {
+        statusDiv.innerHTML = `
+          <div class="status error">
+            ❌ 서버 연결 실패<br>
+            오류: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    async function checkImages() {
+      const statusDiv = document.getElementById('image-status');
+      const images = ['로또배경.png', '로또배경1.png', '로또배경3.png'];
+      let results = [];
+
+      for (const image of images) {
+        try {
+          const response = await fetch(image);
+          if (response.ok) {
+            results.push(`✅ ${image} - 로드 성공`);
+          } else {
+            results.push(`❌ ${image} - 로드 실패 (${response.status})`);
+          }
+        } catch (error) {
+          results.push(`❌ ${image} - 오류: ${error.message}`);
+        }
+      }
+
+      statusDiv.innerHTML = `
+        <div class="status ${results.some(r => r.includes('❌')) ? 'error' : 'success'}">
+          ${results.join('<br>')}
+        </div>
+      `;
+    }
+
+    function testJavaScript() {
+      const statusDiv = document.getElementById('js-status');
+      try {
+        // 기본 JavaScript 기능 테스트
+        const testArray = [1, 2, 3, 4, 5, 6];
+        const randomNum = Math.floor(Math.random() * 45) + 1;
+        const sortedArray = testArray.sort((a, b) => a - b);
+        
+        statusDiv.innerHTML = `
+          <div class="status success">
+            ✅ JavaScript 정상 작동<br>
+            랜덤 번호 생성: ${randomNum}<br>
+            배열 정렬: ${sortedArray.join(', ')}<br>
+            DOM 조작 가능: ${!!document.getElementById('js-status')}
+          </div>
+        `;
+      } catch (error) {
+        statusDiv.innerHTML = `
+          <div class="status error">
+            ❌ JavaScript 오류<br>
+            오류: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    // 페이지 로드 시 자동으로 헬스 체크
+    window.addEventListener('load', () => {
+      checkHealth();
+    });
+  </script>
+</body>
+</html> 

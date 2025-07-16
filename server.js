@@ -6,32 +6,52 @@ const helmet = require('helmet');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// 보안 미들웨어
+// 보안 미들웨어 - CSP 설정 완화
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "blob:"],
+      imgSrc: ["'self'", "data:", "blob:", "*"],
+      fontSrc: ["'self'", "data:", "*"],
+      connectSrc: ["'self'"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
     },
   },
+  crossOriginEmbedderPolicy: false,
 }));
 
 // 압축 미들웨어
 app.use(compression());
 
-// 정적 파일 서빙
-app.use(express.static(__dirname));
+// 정적 파일 서빙 - 캐시 설정 추가
+app.use(express.static(__dirname, {
+  maxAge: '1h',
+  etag: true,
+  lastModified: true
+}));
 
 // 메인 페이지 라우트
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// 테스트 페이지 라우트
+app.get('/test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'test.html'));
+});
+
 // 헬스 체크 엔드포인트
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: '로또 번호 추첨기 서버가 정상 작동 중입니다.' });
+  res.status(200).json({ 
+    status: 'OK', 
+    message: '로또 번호 추첨기 서버가 정상 작동 중입니다.',
+    timestamp: new Date().toISOString(),
+    port: PORT
+  });
 });
 
 // 404 에러 핸들링

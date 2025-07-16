@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "build": "echo 'Static site - no build required'",
     "deploy": "echo 'Deploy to Render'",
-    "render-postbuild": "echo 'Post-build script completed'"
+    "render-postbuild": "echo 'Post-build script completed'",
+    "test": "echo 'No tests specified' && exit 0"
   },
   "keywords": ["lotto", "number", "generator", "korean", "render"],
   "author": "Your Name",
