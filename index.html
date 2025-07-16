@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>랜덤 번호 추첨기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding-top: 80px;     /* 고정 제목 높이만큼 위에 여백 */
+      padding-bottom: 100px; /* 버튼 공간 확보 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 100vw;
+      aspect-ratio: 9/16;
+      margin-left: auto;
+      margin-right: auto;
+      background-image: url('로또배경3.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+
+    h1 {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 20px 0;
+      font-size: 24px;
+      color: #333;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      z-index: 1000;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      background-color: white;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+      width: 50px;
+      height: 50px;
+    }
+
+    .table-wrapper {
+      width: 100%;
+      max-width: 90vw;
+      padding: 0 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      margin: auto 0;
+    }
+
+    .generate-button {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+      width: calc(90vw - 40px);
+      max-width: 400px;
+    }
+
+    .generate-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>1등 예정번호 5세트 추첨기</h1>
+  <div id="results" class="table-wrapper"></div>
+  <button class="generate-button" onclick="generateSets()">번호 생성</button>
+
+  <script>
+    function getRandomFromArray(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateFinalNumbers() {
+      const totalNumbers = Array.from({ length: 45 }, (_, i) => i + 1);
+      let sets = [];
+
+      // 1세트: 그룹별 선택 + 나머지 2개
+      const group1 = [1, 2, 8, 9];
+      const group2 = [6, 7, 13, 14];
+      const group3 = [29, 30, 36, 37];
+      const group4 = [34, 35, 41, 42];
+      
+      let selected1 = [];
+      selected1.push(getRandomFromArray(group1));
+      selected1.push(getRandomFromArray(group2));
+      selected1.push(getRandomFromArray(group3));
+      selected1.push(getRandomFromArray(group4));
+
+      let used = new Set([...group1, ...group2, ...group3, ...group4]);
+      let restNumbers = totalNumbers.filter(num => !used.has(num));
+      let remainingPool = restNumbers.filter(n => !selected1.includes(n));
+
+      while (selected1.length < 6) {
+        let rand = getRandomFromArray(remainingPool);
+        if (!selected1.includes(rand)) {
+          selected1.push(rand);
+        }
+      }
+      selected1.sort((a, b) => a - b);
+      sets.push(selected1);
+
+      // 2세트: 그룹별 선택 + 나머지 2개
+      let selected2 = [];
+      selected2.push(getRandomFromArray(group1));
+      selected2.push(getRandomFromArray(group2));
+      selected2.push(getRandomFromArray(group3));
+      selected2.push(getRandomFromArray(group4));
+
+      let remainingPool2 = restNumbers.filter(n => !selected2.includes(n));
+
+      while (selected2.length < 6) {
+        let rand = getRandomFromArray(remainingPool2);
+        if (!selected2.includes(rand)) {
+          selected2.push(rand);
+        }
+      }
+      selected2.sort((a, b) => a - b);
+      sets.push(selected2);
+
+      // 3세트: 1-29 범위에서 6개 번호
+      let set3 = [];
+      const range1to29 = Array.from({ length: 29 }, (_, i) => i + 1);
+      while (set3.length < 6) {
+        let rand = getRandomFromArray(range1to29);
+        if (!set3.includes(rand)) {
+          set3.push(rand);
+        }
+      }
+      set3.sort((a, b) => a - b);
+      sets.push(set3);
+
+      // 4세트: 20-45 범위에서 6개 번호
+      let set4 = [];
+      const range20to45 = Array.from({ length: 26 }, (_, i) => i + 20);
+      while (set4.length < 6) {
+        let rand = getRandomFromArray(range20to45);
+        if (!set4.includes(rand)) {
+          set4.push(rand);
+        }
+      }
+      set4.sort((a, b) => a - b);
+      sets.push(set4);
+
+      // 5세트: 10-30 범위에서 6개 번호
+      let set5 = [];
+      const range10to30 = Array.from({ length: 21 }, (_, i) => i + 10);
+      while (set5.length < 6) {
+        let rand = getRandomFromArray(range10to30);
+        if (!set5.includes(rand)) {
+          set5.push(rand);
+        }
+      }
+      set5.sort((a, b) => a - b);
+      sets.push(set5);
+
+      return sets;
+    }
+
+    async function generateSets() {
+      const resultDiv = document.getElementById('results');
+      resultDiv.innerHTML = '';
+
+      const finalSets = generateFinalNumbers();
+
+      // 모든 5개 세트 표시
+      for (let i = 0; i < 5; i++) {
+        let table = document.createElement('table');
+        let header = document.createElement('tr');
+        let th = document.createElement('th');
+        th.colSpan = 6;
+        th.textContent = `세트 ${i + 1}`;
+        header.appendChild(th);
+        table.appendChild(header);
+
+        let row = document.createElement('tr');
+        let tds = [];
+
+        for (let j = 0; j < 6; j++) {
+          let td = document.createElement('td');
+          td.textContent = '';
+          row.appendChild(td);
+          tds.push(td);
+        }
+
+        table.appendChild(row);
+        resultDiv.appendChild(table);
+
+        // 번호 하나씩 천천히 출력
+        for (let j = 0; j < 6; j++) {
+          await animateSlot(tds[j], finalSets[i][j], 800 + j * 200); // 🔹 더 느리게 조정
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 600));
+      }
+    }
+
+    function animateSlot(td, finalNumber, duration) {
+      return new Promise(resolve => {
+        let count = 0;
+        let interval = setInterval(() => {
+          td.textContent = Math.floor(Math.random() * 45) + 1;
+          count++;
+          if (count > duration / 80) { // 🔹 80ms 단위로 더 느리게 반복
+            clearInterval(interval);
+            td.textContent = finalNumber;
+            resolve();
+          }
+        }, 200);
+      });
+    }
+  </script>
+</body>
+</html>
