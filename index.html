@@ -70,7 +70,7 @@
     .table-wrapper {
       width: 100%;
       max-width: 90vw;
-      padding: 0 10px;
+      padding: 0 2px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -78,7 +78,27 @@
       flex: 1;
       margin: auto 0;
     }
+    .h1-button {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+      width: calc(90vw - 40px);
+      max-width: 400px;
+    }
 
+
+    .h1-button:hover {
+      background-color: #0056b3;
+    }
 
     .generate-button {
       position: fixed;
@@ -104,10 +124,10 @@
   </style>
 </head>
 <body>
-  <h1>1등 예정번호 5세트 추첨기</h1>
+  <button class="h1-button" >1등 예정번호 5세트 추첨기</button>
   <div id="results" class="table-wrapper"></div>
   <button class="generate-button" onclick="generateSets()">번호 생성</button>
-
+  
 
   <script>
     function getRandomFromArray(arr) {
