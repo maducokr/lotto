@@ -80,21 +80,20 @@
     }
     .h1-button {
       position: fixed;
-      top: 20px;
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 12px 24px;
-      font-size: 18px;
+      padding: 10px 20px;
+      font-size: 13px;
       background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
       z-index: 1000;
-      width: calc(90vw - 40px);
-      max-width: 400px;
+      width: calc(90vw - 20px);
+      max-width: 250px;
     }
-
 
     .h1-button:hover {
       background-color: #0056b3;
@@ -102,19 +101,19 @@
 
     .generate-button {
       position: fixed;
-      bottom: 20px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 12px 24px;
-      font-size: 18px;
+      padding: 10px 20px;
+      font-size: 13px;
       background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
       z-index: 1000;
-      width: calc(90vw - 40px);
-      max-width: 400px;
+      width: calc(90vw - 20px);
+      max-width: 250px;
     }
 
 
@@ -124,9 +123,9 @@
   </style>
 </head>
 <body>
-  <button class="h1-button" >1등 예정번호 5세트 추첨기</button>
+  <button class="h1-button" >1등 예상번호 추첨기</button>
   <div id="results" class="table-wrapper"></div>
-  <button class="generate-button" onclick="generateSets()">번호 생성</button>
+  <button class="generate-button" onclick="generateSets()">추  첨</button>
   
 
   <script>
