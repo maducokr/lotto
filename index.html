@@ -106,29 +106,53 @@
       transform: translateX(-50%);
       padding: 10px 20px;
       font-size: 13px;
-      background-color: #007bff;
+      background-color: #28a745;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       z-index: 1000;
-      width: calc(90vw - 20px);
-      max-width: 250px;
+      width: calc(45vw - 15px);
+      max-width: 120px;
+      margin-right: 37.8px;
     }
 
+    .stop-button {
+      position: fixed;
+      bottom: 10px;
+      left: calc(50% + 37.8px);
+      padding: 10px 20px;
+      font-size: 13px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+      width: calc(45vw - 15px);
+      max-width: 120px;
+    }
 
     .generate-button:hover {
-      background-color: #0056b3;
+      background-color: #218838;
+    }
+
+    .stop-button:hover {
+      background-color: #c82333;
     }
   </style>
 </head>
 <body>
   
   <div id="results" class="table-wrapper"></div>
-  <button class="generate-button" onclick="generateSets()">1등 예상번호 추첨</button>
+  <button class="generate-button" onclick="generateSets()">RUN</button>
+  <button class="stop-button" onclick="stopGeneration()">Stop</button>
   
 
   <script>
+    let isGenerating = false;
+    let shouldStop = false;
+
     function getRandomFromArray(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
@@ -232,50 +256,65 @@
 
 
     async function generateSets() {
-      const resultDiv = document.getElementById('results');
-      resultDiv.innerHTML = '';
+      if (isGenerating) return; // 이미 실행 중이면 중복 실행 방지
+      
+      isGenerating = true;
+      shouldStop = false;
+      
+      while (!shouldStop) {
+        const resultDiv = document.getElementById('results');
+        resultDiv.innerHTML = '';
 
+        const finalSets = generateFinalNumbers();
 
-      const finalSets = generateFinalNumbers();
+        // 모든 5개 세트 표시
+        for (let i = 0; i < 5; i++) {
+          if (shouldStop) break; // 중간에 중단 요청이 있으면 중단
+          
+          let table = document.createElement('table');
+          let header = document.createElement('tr');
+          let th = document.createElement('th');
+          th.colSpan = 6;
+          th.textContent = `세트 ${i + 1}`;
+          header.appendChild(th);
+          table.appendChild(header);
 
+          let row = document.createElement('tr');
+          let tds = [];
 
-      // 모든 5개 세트 표시
-      for (let i = 0; i < 5; i++) {
-        let table = document.createElement('table');
-        let header = document.createElement('tr');
-        let th = document.createElement('th');
-        th.colSpan = 6;
-        th.textContent = `세트 ${i + 1}`;
-        header.appendChild(th);
-        table.appendChild(header);
+          for (let j = 0; j < 6; j++) {
+            let td = document.createElement('td');
+            td.textContent = '';
+            row.appendChild(td);
+            tds.push(td);
+          }
 
+          table.appendChild(row);
+          resultDiv.appendChild(table);
 
-        let row = document.createElement('tr');
-        let tds = [];
+          // 번호 하나씩 천천히 출력
+          for (let j = 0; j < 6; j++) {
+            if (shouldStop) break; // 중간에 중단 요청이 있으면 중단
+            await animateSlot(tds[j], finalSets[i][j], 800 + j * 200);
+          }
 
-
-        for (let j = 0; j < 6; j++) {
-          let td = document.createElement('td');
-          td.textContent = '';
-          row.appendChild(td);
-          tds.push(td);
+          if (!shouldStop) {
+            await new Promise(resolve => setTimeout(resolve, 600));
+          }
         }
-
-
-        table.appendChild(row);
-        resultDiv.appendChild(table);
-
-
-        // 번호 하나씩 천천히 출력
-        for (let j = 0; j < 6; j++) {
-          await animateSlot(tds[j], finalSets[i][j], 800 + j * 200); // 🔹 더 느리게 조정
+        
+        // 한 사이클 완료 후 잠시 대기
+        if (!shouldStop) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
-
-
-        await new Promise(resolve => setTimeout(resolve, 600));
       }
+      
+      isGenerating = false;
     }
 
+    function stopGeneration() {
+      shouldStop = true;
+    }
 
     function animateSlot(td, finalNumber, duration) {
       return new Promise(resolve => {
