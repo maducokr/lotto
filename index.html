@@ -102,7 +102,7 @@
 
     .button-container {
       position: fixed;
-      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      bottom: calc(30px + env(safe-area-inset-bottom, 0px));
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -144,6 +144,19 @@
     .stop-button:hover {
       background-color: #c82333;
     }
+
+    .privacy-text {
+      font-size: 8px;
+      color: #666;
+      text-align: center;
+      margin-top: 8px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .privacy-text:hover {
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -153,6 +166,7 @@
     <button class="generate-button" onclick="generateSets()">RUN</button>
     <button class="stop-button" onclick="stopGeneration()">Stop</button>
   </div>
+  <div class="privacy-text" onclick="window.location.href='personal.html'">개인정보처리방침</div>
   
 
   <script>
