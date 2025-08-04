@@ -183,10 +183,10 @@
 
 
       // 1세트: 그룹별 선택 + 나머지 2개
-      const group1 = [1, 2, 8, 9];
-      const group2 = [6, 7, 13, 14];
-      const group3 = [29, 30, 36, 37];
-      const group4 = [34, 35, 41, 42];
+      const group1 = [1, 2, 3, 10, 11, 12];
+      const group2 = [7, 8, 9, 16, 17, 18];
+      const group3 = [28, 29, 30, 37, 38, 39];
+      const group4 = [34, 35, 36, 43, 44, 45];
      
       let selected1 = [];
       selected1.push(getRandomFromArray(group1));
@@ -210,19 +210,10 @@
       sets.push(selected1);
 
 
-      // 2세트: 그룹별 선택 + 나머지 2개
+      // 2세트: 1-45 범위에서 6개 번호 랜덤 선택
       let selected2 = [];
-      selected2.push(getRandomFromArray(group1));
-      selected2.push(getRandomFromArray(group2));
-      selected2.push(getRandomFromArray(group3));
-      selected2.push(getRandomFromArray(group4));
-
-
-      let remainingPool2 = restNumbers.filter(n => !selected2.includes(n));
-
-
       while (selected2.length < 6) {
-        let rand = getRandomFromArray(remainingPool2);
+        let rand = Math.floor(Math.random() * 45) + 1;
         if (!selected2.includes(rand)) {
           selected2.push(rand);
         }
